@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+    <h:head>
+        <title>TODO supply a title</title>
+        <f:event listener="#{ProductoC.listar()}" type="preRenderView"/>
+        <p:button icon="pi pi-home" value="Compras Realizadas" outcome="VistaVenta" style="float: right"/>
+        <p:button icon="pi pi-shopping-cart" value="Carrrito" outcome="carrito"/>
+    </h:head>
+    <body style="background-color: black">
+    <p:growl id="mensaje" severity="info, error" showDetail="true" showSummary="true" />
+    <h:form id="formpro">
+
+        <p:dataGrid var="prod" value="#{ProductoC.listadoProd}" columns="3" layout="grid"
+                    id="productos">
+
+            <f:facet name="header">
+                Productos Registrados
+            </f:facet>
+
+            <p:panel header="#{prod.codpro}" style="text-align:center">
+                <h:panelGrid columns="1" style="width:100%" >
+                    <img src="Image/#{prod.nompro}.png" height=" 80 px"/>
+                    <h:outputText value="Nombre : #{prod.nompro}" />
+
+                    <p:spacer height="10 px"/>
+                    <h:outputText value="Descripcion : #{prod.despro}" />
+                    <p:spacer height="10 px"/>
+                    <h:outputText value="#{prod.prepro}" style="font-size:30px; font-weight: bold">
+                        <f:convertNumber type="currency" pattern="¤#0" currencySymbol="$" />
+                    </h:outputText>
+                    <p:spacer height="10 px"/>
+                    <h:outputText value="Disponibles: #{prod.stocpro}" />
+                    <p:spacer height="10 px"/>
+                    <p:commandButton icon="pi pi-shopping-cart" value="Añadir" actionListener="#{ProductoC.agregar(prod.codpro)}" oncomplete="PF('wdlgcant').show()"/>
+
+                </h:panelGrid>
+            </p:panel>
+
+        </p:dataGrid>
+
+        <p:dialog header="ingrese la cantidad" widgetVar="wdlgcant" id="dlgcant" >
+            <h:form>
+                <h:panelGrid columns="1">
+                    <p:outputLabel value="Cantidad"/>
+                    <p:inputText value="#{ProductoC.pro.cantidad}" id="cantidad"/>
+                </h:panelGrid>         
+            </h:form>
+            <center>
+                <p:commandButton value="ok"  action="#{ProductoC.validadorRepetido(ProductoC.pro)}" oncomplete="if(!args.validationFailed)PF('wdlgcant').hide();" update="mensaje"/>
+            </center>
+
+        </p:dialog>
+    </h:form>
+</body>
+</html>

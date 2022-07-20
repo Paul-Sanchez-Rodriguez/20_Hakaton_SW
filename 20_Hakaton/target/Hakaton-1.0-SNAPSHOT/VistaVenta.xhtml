@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+    <h:head>
+        <title>TODO supply a title</title>
+        <f:event listener="#{ProductoC.listarVenta()}" type="preRenderView" />
+    </h:head>
+    <body>
+    <p:button value="Regresar" outcome="index"/>
+    <h:form id="formtblVentas">
+        <p:dataTable var="tblVentasVistas" id="TablasVistaVenta" value="#{ProductoC.listarventa}">
+
+            <p:column headerText="Nro Venta" style="width: 60px; text-align: center">
+                <h:outputText value="#{tblVentasVistas.idvent}"/>
+            </p:column>
+            <p:column headerText="Nombre del cliente" style="width: 300px; text-align: center">
+                <h:outputText value="#{tblVentasVistas.cliente}"/>
+            </p:column>
+            <p:column headerText="Fecha de Venta" style="width: 100px; text-align: center">
+                <h:outputText value="#{tblVentasVistas.fecha}"/>
+            </p:column>
+            <p:column headerText="Nombre del Empleado" style="width: 300px; text-align: center">
+                <h:outputText value="#{tblVentasVistas.empleado}"/>
+            </p:column>
+            <p:column headerText="Boleta" style="width: 300px; text-align: center">
+                <p:commandButton value="Generar boleta" onclick="this.form.target = '_blank'" styleClass="rounded-button ui-button-secondary"
+                                 ajax="false" title="Boleta" actionListener="#{ProductoC.verReportePDFEST(tblVentasVistas.idvent)}"/>
+            </p:column>
+        </p:dataTable>
+
+    </h:form>
+</body>
+</html>

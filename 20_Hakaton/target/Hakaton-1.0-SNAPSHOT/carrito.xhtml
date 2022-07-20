@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+    <h:head>
+        <title>TODO supply a title</title>
+        <p:button icon="pi pi-home" value="Compras Realizadas" outcome="VistaVenta" style="float: right"/>
+        <p:button icon="pi pi-home" value="Productos" outcome="index"/>
+    </h:head>
+    <body>
+        <p:growl id="mensaje" severity="info, error" showDetail="true" showSummary="true" />
+        <center>
+
+            <h:form id="cliente" style="font-weight: bold">
+                <h2>
+                    Carrito de PizzaHut
+                </h2>
+                <p:panelGrid columns="4">
+                    <h:outputLabel value="Cliente"/>
+                    <p:autoComplete id="AutocompletarCleinet" value="#{ProductoC.cli.datos}" completeMethod="#{ProductoC.autocompleteCliente}">
+                        <p:keyFilter regEx="/[a-z-A-Z- ]/"/>
+                        <p:ajax event="itemSelect" listener="#{ProductoC.filtrado()}" update="txtDireccion txtCelular"/>
+                    </p:autoComplete>
+                    <h:outputLabel value="Direccion"/>
+                    <h:outputLabel value="#{ProductoC.cli.dircli}" id="txtDireccion"/>
+                    <h:outputLabel value="Celular"/>
+                    <h:outputLabel value="#{ProductoC.cli.celcli}" id="txtCelular" />
+                    <p:outputLabel value="Fecha de Venta"/>
+                    <h:outputText value="#{ProductoC.ven.fecha}">
+                        <f:convertDateTime pattern="dd-MM-yyyy" locale="es"/>
+                    </h:outputText>
+                </p:panelGrid>
+            </h:form>
+
+        </center>
+    <h:form id="formcarrito">
+        <p:dataTable var="tblpro" id="tablaprod" value="#{ProductoC.listarVentaDealle}" rows="5" 
+                     paginator="true"> 
+            <p:column headerText="Codigo Producto">
+                <h:outputText value="#{tblpro.codigoPRoducto}"  />
+            </p:column>
+            <p:column headerText="Nombre de Producto">
+                <h:outputText value="#{tblpro.nompro}"  />
+            </p:column>
+            <p:column headerText="Descripcion">
+                <h:outputText value="#{tblpro.descripcion}"  />
+            </p:column>
+            <p:column headerText="Stock">
+                <h:outputText value="#{tblpro.stock}"  />
+            </p:column>
+            <p:column headerText="Cantidad">
+                <h:outputText value="#{tblpro.cantidad}"  />
+            </p:column>
+            <p:column headerText="Precio">
+                <h:outputText value="#{tblpro.prcio}"  />
+            </p:column>
+            <p:column headerText="Subtotal" >
+                <h:outputText value="#{tblpro.subtotal}" id="jxtsubtotal" />
+            </p:column>
+            <p:column>
+                <p:commandButton icon="pi pi-trash" actionListener="#{ProductoC.elimianarProductoAgregado(tblpro.codigoPRoducto)}" update="tablaprod formcarrito:txttotal mensaje"/>
+            </p:column>
+        </p:dataTable>
+        <div style="font-weight: bold;float: right">
+            <h:outputLabel value="Total:"/>
+            <h:outputLabel value="#{ProductoC.total}" id="txttotal"/>  
+        </div>
+    </h:form>
+    <h:form>
+
+        <p:commandButton value="Comprar" icon="pi pi-save" oncomplete="PF('reporte').show()" actionListener="#{ProductoC.registrarVenta()}" update="formcarrito:tablaprod formcarrito:txttotal cliente mensaje"/>
+
+        <p:confirmDialog widgetVar="reporte" showEffect="fade" width="300" 
+                         message="¿Desea una boleta?" header="Boleta de Venta" severity="warn">
+            <p:commandButton value="Generar" onclick="this.form.target = '_blank'" 
+                             ajax="false" title="Boleta" actionListener="#{ProductoC.verReporteActual()}" icon="pi pi-print"/>
+
+            <p:commandButton value="No" type="button" styleClass="ui-button-secondary" icon="pi pi-times"
+                             onclick="PF('reporte').hide()"/>
+        </p:confirmDialog>
+    </h:form>
+</body>
+</html>
